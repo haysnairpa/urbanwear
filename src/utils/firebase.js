@@ -6,6 +6,15 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where, 
+  orderBy
+} from 'firebase/firestore'
 
 // Firebase configuration
 const firebaseConfig = {
@@ -57,4 +66,41 @@ export const subscribeToAuthChanges = (callback) => {
   return onAuthStateChanged(auth, callback);
 };
 
-export { auth };
+const db = getFirestore(app);
+
+export const saveOrder = async (orderData) => {
+  try {
+    const docRef = await addDoc(collection(db, 'orders'), orderData);
+    return docRef.id;
+  } catch (error) {
+    console.error("Error saving order", error);
+    throw error;
+  }
+}
+
+export const getOrdersByUserId = async (userId) => {
+  try {
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+      ordersRef,
+      where('userId', '==', userId),
+      orderBy('orderDate', 'desc')
+    )
+    const querySnapshot = await getDocs(q);
+    const orders =[]
+
+    querySnapshot.forEach((doc) => {
+      orders.push({
+        id: doc.id,
+        ...doc.data()
+      })
+    })
+    
+    return orders; // Menambahkan return orders yang sebelumnya tidak ada
+  } catch (error) {
+    console.error('Error fetching orders: ', error);
+    throw error;
+  }
+}
+
+export { auth, db };

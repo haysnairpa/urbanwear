@@ -69,12 +69,15 @@ const Navbar = () => {
           <NavLink to="/" label="Home" isScrolled={isScrolled} />
           <NavLink to="/products" label="Products" isScrolled={isScrolled} />
           {isAuthenticated ? (
-            <button
-              onClick={handleLogout}
-              className={`font-medium ${isScrolled ? 'text-black' : 'text-gray-900'} hover:text-[#3b82f6] transition-colors`}
-            >
-              Logout
-            </button>
+            <>
+              <NavLink to="/profile" label="Profil" isScrolled={isScrolled} />
+              <button
+                onClick={handleLogout}
+                className={`font-medium ${isScrolled ? 'text-black' : 'text-gray-900'} hover:text-[#3b82f6] transition-colors`}
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <NavLink to="/login" label="Login" isScrolled={isScrolled} />
           )}
@@ -143,12 +146,15 @@ const Navbar = () => {
               <MobileNavLink to="/" label="Home" />
               <MobileNavLink to="/products" label="Products" />
               {isAuthenticated ? (
-                <button
-                  onClick={handleLogout}
-                  className="block py-2 text-gray-800 hover:text-[#3b82f6]"
-                >
-                  Logout
-                </button>
+                <>
+                  <MobileNavLink to="/profile" label="Profil" />
+                  <button
+                    onClick={handleLogout}
+                    className="block py-2 text-gray-800 hover:text-[#3b82f6]"
+                  >
+                    Logout
+                  </button>
+                </>
               ) : (
                 <MobileNavLink to="/login" label="Login" />
               )}

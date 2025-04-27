@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './contexts/CartContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { OrderProvider } from './contexts/OrderContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AppRoutes from './routes/AppRoutes';
@@ -12,6 +13,7 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
+          <OrderProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <main className="flex-grow">
@@ -31,6 +33,7 @@ function App() {
               theme="light"
             />
           </div>
+          </OrderProvider>
         </CartProvider>
       </AuthProvider>
     </Router>

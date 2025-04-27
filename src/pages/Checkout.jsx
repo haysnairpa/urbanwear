@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useOrder } from '../contexts/OrderContext';
 
 const Checkout = () => {
   const { cartItems, total, clearCart } = useCart();
   const { currentUser } = useAuth();
+  const { addOrder } = useOrder();
   const navigate = useNavigate();
   
   // Form state
@@ -39,7 +41,7 @@ const Checkout = () => {
   const finalTotal = total + shippingCost + tax;
   
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     // Validate form
@@ -49,20 +51,46 @@ const Checkout = () => {
       return;
     }
     
-    // Process order (simulated)
+    // Process order
     setIsProcessing(true);
     
-    // Simulate API call to process order
-    setTimeout(() => {
+    try {
+      // Prepare order data
+      const orderData = {
+        items: cartItems,
+        shippingInfo: {
+          fullName: formData.fullName,
+          email: formData.email,
+          address: formData.address,
+          city: formData.city,
+          zipCode: formData.zipCode,
+          country: formData.country
+        },
+        paymentMethod: formData.paymentMethod,
+        subtotal: total,
+        shipping: shippingCost,
+        tax: tax,
+        total: finalTotal,
+        createdAt: new Date().toISOString()
+      };
+      
+      // Save order to database
+      await addOrder(orderData);
+      
       // Clear cart
       clearCart();
       
       // Show success message
-      toast.success('Order placed successfully!');
+      toast.success('Order successfully placed!');
       
-      // Redirect to home page
-      navigate('/');
-    }, 2000);
+      // Redirect to order history page
+      navigate('/profile/orders');
+    } catch (error) {
+      console.error('Error processing order:', error);
+      toast.error('An error occurred while processing your order. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
   
   return (
